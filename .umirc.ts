@@ -29,6 +29,11 @@ export default defineConfig({
       path: '/table',
       component: './Table',
     },
+    {
+      name: '图表',
+      path: '/charts',
+      component: './Charts',
+    },
   ],
   npmClient: 'pnpm',
 });
