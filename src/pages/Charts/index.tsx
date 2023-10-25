@@ -1,14 +1,14 @@
 import { PageContainer } from '@ant-design/pro-components';
-import styles from './index.less';
-import SingleLine from './components/SingleLine';
+
 import MultiLine from './components/MultiLine';
+// import SingleLine from './components/SingleLine';
+import styles from './index.less';
 
 const HomePage: React.FC = () => {
-  
   return (
     <PageContainer ghost>
       <div className={styles.container}>
-        <SingleLine /> 
+        {/* <SingleLine /> */}
 
         <br />
         <br />

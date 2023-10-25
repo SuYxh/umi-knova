@@ -11,7 +11,7 @@ const MultiLine = () => {
       .then((response) => response.json())
       .then((json) => {
         console.log('MultiLine', json);
-        setData(json)
+        setData(json);
       })
       .catch((error) => {
         console.log('fetch data failed', error);

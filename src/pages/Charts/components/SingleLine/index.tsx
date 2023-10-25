@@ -1,5 +1,6 @@
 import { Line } from '@ant-design/plots';
 import { useEffect, useState } from 'react';
+
 import styles from './index.less';
 
 const SingleLine: React.FC = () => {
