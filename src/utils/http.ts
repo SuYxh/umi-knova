@@ -31,7 +31,7 @@ instance.interceptors.response.use(
         window.location.replace('/login');
       }, 1000);
     }
-    return response;
+    return response.data;
   },
   function (error) {
     return Promise.reject(error);

@@ -182,7 +182,7 @@ export default () => {
         persistenceKey: 'pro-table-singe-demos',
         persistenceType: 'localStorage',
         onChange(value) {
-          console.log('value: ', value);
+          console.log("🚀 ~ file: index.tsx:185 ~ onChange ~ value:", value)
         },
       }}
       rowKey="id"

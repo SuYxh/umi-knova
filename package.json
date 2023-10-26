@@ -4,6 +4,7 @@
   "scripts": {
     "build": "max build",
     "dev": "max dev",
+    "dev:no-mock": "MOCK=none max dev",
     "format": "prettier --cache --write .",
     "postinstall": "max setup",
     "prepare": "husky install",

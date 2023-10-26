@@ -20,8 +20,7 @@ import { flushSync } from 'react-dom';
 
 import { Footer } from '@/components';
 import FormattedMessage from '@/components/FormattedMessage';
-import { login } from '@/services/ant-design-pro/api';
-import { getFakeCaptcha } from '@/services/ant-design-pro/login';
+import { getFakeCaptcha,login } from '@/services/user';
 
 import Settings from '../../../../config/defaultSettings';
 
@@ -105,6 +104,8 @@ const Login: React.FC = () => {
 
   const fetchUserInfo = async () => {
     const userInfo = await initialState?.fetchUserInfo?.();
+    console.log('userInfo', userInfo);
+
     if (userInfo) {
       flushSync(() => {
         setInitialState((s) => ({
@@ -119,6 +120,9 @@ const Login: React.FC = () => {
     try {
       // 登录
       const msg = await login({ ...values, type });
+      console.log('msg', msg);
+
+      // @ts-ignore
       if (msg.status === 'ok') {
         message.success('登录成功！');
         await fetchUserInfo();
@@ -128,6 +132,7 @@ const Login: React.FC = () => {
       }
       console.log(msg);
       // 如果失败去设置用户错误信息
+      // @ts-ignore
       setUserLoginState(msg);
     } catch (error) {
       console.log(error);

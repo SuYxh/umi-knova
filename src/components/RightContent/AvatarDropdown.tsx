@@ -11,7 +11,7 @@ import type { MenuInfo } from 'rc-menu/lib/interface';
 import React, { useCallback } from 'react';
 import { flushSync } from 'react-dom';
 
-import { outLogin } from '@/services/ant-design-pro/api';
+import { outLogin } from '@/services/user';
 
 import HeaderDropdown from '../HeaderDropdown';
 
