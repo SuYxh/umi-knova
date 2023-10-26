@@ -38,20 +38,9 @@ export default [
     icon: 'crown',
     component: './Access',
     access: 'canSeeAdmin',
-    routes: [
-      {
-        path: '/admin',
-        redirect: '/admin/sub-page',
-      },
-      {
-        path: '/admin/sub-page',
-        name: '管理员权限',
-        component: './Access/Admin.tsx',
-      },
-    ],
   },
   {
-    name: ' CRUD 示例',
+    name: '表格',
     path: '/table',
     icon: 'table',
     component: './Table',
@@ -60,7 +49,22 @@ export default [
     name: '图表',
     path: '/charts',
     icon: 'PieChartOutlined',
-    component: './Charts',
+    routes: [
+      {
+        path: '/charts',
+        redirect: '/charts/single-line',
+      },
+      {
+        path: '/charts/single-line',
+        name: 'SingleLine',
+        component: '@/pages/Charts/SingleLine',
+      },
+      {
+        path: '/charts/multi-line',
+        name: 'MultiLine',
+        component: '@/pages/Charts/MultiLine',
+      },
+    ],
   },
   {
     path: '*',

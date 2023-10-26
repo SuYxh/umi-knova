@@ -1,272 +1,252 @@
-import {
-  ActionType,
-  FooterToolbar,
-  PageContainer,
-  ProDescriptions,
-  ProDescriptionsItemProps,
-  ProTable,
-} from '@ant-design/pro-components';
-import { Button, Divider, Drawer, message } from 'antd';
-import React, { useRef, useState } from 'react';
-
-import services from '@/services/demo';
-
-import CreateForm from './components/CreateForm';
-import UpdateForm, { FormValueType } from './components/UpdateForm';
-
-const { addUser, queryUserList, deleteUser, modifyUser } =
-  services.UserController;
-
-/**
- * 添加节点
- * @param fields
- */
-const handleAdd = async (fields: API.UserInfo) => {
-  const hide = message.loading('正在添加');
-  try {
-    await addUser({ ...fields });
-    hide();
-    message.success('添加成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('添加失败请重试！');
-    return false;
-  }
+import { EllipsisOutlined, PlusOutlined } from '@ant-design/icons';
+import type { ActionType, ProColumns } from '@ant-design/pro-components';
+import { ProTable, TableDropdown } from '@ant-design/pro-components';
+import { Button, Dropdown, Space, Tag } from 'antd';
+import request from 'axios';
+import { useRef } from 'react';
+export const waitTimePromise = async (time: number = 100) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(true);
+    }, time);
+  });
 };
 
-/**
- * 更新节点
- * @param fields
- */
-const handleUpdate = async (fields: FormValueType) => {
-  const hide = message.loading('正在配置');
-  try {
-    await modifyUser(
-      {
-        userId: fields.id || '',
-      },
-      {
-        name: fields.name || '',
-        nickName: fields.nickName || '',
-        email: fields.email || '',
-      },
-    );
-    hide();
-
-    message.success('配置成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('配置失败请重试！');
-    return false;
-  }
+export const waitTime = async (time: number = 100) => {
+  await waitTimePromise(time);
 };
 
-/**
- *  删除节点
- * @param selectedRows
- */
-const handleRemove = async (selectedRows: API.UserInfo[]) => {
-  const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
+type GithubIssueItem = {
+  url: string;
+  id: number;
+  number: number;
+  title: string;
+  labels: {
+    name: string;
+    color: string;
+  }[];
+  state: string;
+  comments: number;
+  created_at: string;
+  updated_at: string;
+  closed_at?: string;
+};
+
+const columns: ProColumns<GithubIssueItem>[] = [
+  {
+    dataIndex: 'index',
+    valueType: 'indexBorder',
+    width: 48,
+  },
+  {
+    title: '标题',
+    dataIndex: 'title',
+    copyable: true,
+    ellipsis: true,
+    tip: '标题过长会自动收缩',
+    formItemProps: {
+      rules: [
+        {
+          required: true,
+          message: '此项为必填项',
+        },
+      ],
+    },
+  },
+  {
+    disable: true,
+    title: '状态',
+    dataIndex: 'state',
+    filters: true,
+    onFilter: true,
+    ellipsis: true,
+    valueType: 'select',
+    valueEnum: {
+      all: { text: '超长'.repeat(50) },
+      open: {
+        text: '未解决',
+        status: 'Error',
+      },
+      closed: {
+        text: '已解决',
+        status: 'Success',
+        disabled: true,
+      },
+      processing: {
+        text: '解决中',
+        status: 'Processing',
+      },
+    },
+  },
+  {
+    disable: true,
+    title: '标签',
+    dataIndex: 'labels',
+    search: false,
+    renderFormItem: (_, { defaultRender }) => {
+      return defaultRender(_);
+    },
+    render: (_, record) => (
+      <Space>
+        {record.labels.map(({ name, color }) => (
+          <Tag color={color} key={name}>
+            {name}
+          </Tag>
+        ))}
+      </Space>
+    ),
+  },
+  {
+    title: '创建时间',
+    key: 'showTime',
+    dataIndex: 'created_at',
+    valueType: 'date',
+    sorter: true,
+    hideInSearch: true,
+  },
+  {
+    title: '创建时间',
+    dataIndex: 'created_at',
+    valueType: 'dateRange',
+    hideInTable: true,
+    search: {
+      transform: (value) => {
+        return {
+          startTime: value[0],
+          endTime: value[1],
+        };
+      },
+    },
+  },
+  {
+    title: '操作',
+    valueType: 'option',
+    key: 'option',
+    render: (text, record, _, action) => [
+      <a
+        key="editable"
+        onClick={() => {
+          action?.startEditable?.(record.id);
+        }}
+      >
+        编辑
+      </a>,
+      <a href={record.url} target="_blank" rel="noopener noreferrer" key="view">
+        查看
+      </a>,
+      <TableDropdown
+        key="actionGroup"
+        onSelect={() => action?.reload()}
+        menus={[
+          { key: 'copy', name: '复制' },
+          { key: 'delete', name: '删除' },
+        ]}
+      />,
+    ],
+  },
+];
+
+const fetchData = async (params: any) => {
   try {
-    await deleteUser({
-      userId: selectedRows.find((row) => row.id)?.id || '',
+    const result = await request('https://proapi.azurewebsites.net/github/issues', {
+      params,
     });
-    hide();
-    message.success('删除成功，即将刷新');
-    return true;
+    return result.data;
   } catch (error) {
-    hide();
-    message.error('删除失败，请重试');
-    return false;
+    return {
+      data: [],
+      page: 1,
+      success: false,
+      total: 0,
+    };
   }
 };
 
-const TableList: React.FC<unknown> = () => {
-  const [createModalVisible, handleModalVisible] = useState<boolean>(false);
-  const [updateModalVisible, handleUpdateModalVisible] =
-    useState<boolean>(false);
-  const [stepFormValues, setStepFormValues] = useState({});
+export default () => {
   const actionRef = useRef<ActionType>();
-  const [row, setRow] = useState<API.UserInfo>();
-  const [selectedRowsState, setSelectedRows] = useState<API.UserInfo[]>([]);
-  const columns: ProDescriptionsItemProps<API.UserInfo>[] = [
-    {
-      title: '名称',
-      dataIndex: 'name',
-      tip: '名称是唯一的 key',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '名称为必填项',
-          },
-        ],
-      },
-    },
-    {
-      title: '昵称',
-      dataIndex: 'nickName',
-      valueType: 'text',
-    },
-    {
-      title: '性别',
-      dataIndex: 'gender',
-      hideInForm: true,
-      valueEnum: {
-        0: { text: '男', status: 'MALE' },
-        1: { text: '女', status: 'FEMALE' },
-      },
-    },
-    {
-      title: '操作',
-      dataIndex: 'option',
-      valueType: 'option',
-      render: (_, record) => (
-        <>
-          <a
-            onClick={() => {
-              handleUpdateModalVisible(true);
-              setStepFormValues(record);
-            }}
-          >
-            配置
-          </a>
-          <Divider type="vertical" />
-          <a href="">订阅警报</a>
-        </>
-      ),
-    },
-  ];
 
   return (
-    <PageContainer
-      header={{
-        title: 'CRUD 示例',
+    <ProTable<GithubIssueItem>
+      columns={columns}
+      actionRef={actionRef}
+      cardBordered
+      request={async (params, sort, filter) => {
+        console.log(sort, filter);
+        await waitTime(1000);
+        return fetchData(params)
       }}
-    >
-      <ProTable<API.UserInfo>
-        headerTitle="查询表格"
-        actionRef={actionRef}
-        rowKey="id"
-        search={{
-          labelWidth: 120,
-        }}
-        toolBarRender={() => [
-          <Button
-            key="1"
-            type="primary"
-            onClick={() => handleModalVisible(true)}
-          >
-            新建
-          </Button>,
-        ]}
-        request={async (params, sorter, filter) => {
-          const { data, success } = await queryUserList({
-            ...params,
-            // FIXME: remove @ts-ignore
-            // @ts-ignore
-            sorter,
-            filter,
-          });
-          return {
-            data: data?.list || [],
-            success,
-          };
-        }}
-        columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows) => setSelectedRows(selectedRows),
-        }}
-      />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              已选择{' '}
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              项&nbsp;&nbsp;
-            </div>
+      editable={{
+        type: 'multiple',
+      }}
+      columnsState={{
+        persistenceKey: 'pro-table-singe-demos',
+        persistenceType: 'localStorage',
+        onChange(value) {
+          console.log('value: ', value);
+        },
+      }}
+      rowKey="id"
+      search={{
+        labelWidth: 'auto',
+      }}
+      options={{
+        setting: {
+          listsHeight: 400,
+        },
+      }}
+      form={{
+        // 由于配置了 transform，提交的参与与定义的不同这里需要转化一下
+        syncToUrl: (values, type) => {
+          if (type === 'get') {
+            return {
+              ...values,
+              created_at: [values.startTime, values.endTime],
+            };
           }
+          return values;
+        },
+      }}
+      pagination={{
+        pageSize: 5,
+        onChange: (page) => console.log(page),
+      }}
+      dateFormatter="string"
+      headerTitle="高级表格"
+      toolBarRender={() => [
+        <Button
+          key="button"
+          icon={<PlusOutlined />}
+          onClick={() => {
+            actionRef.current?.reload();
+          }}
+          type="primary"
         >
-          <Button
-            onClick={async () => {
-              await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            批量删除
+          新建
+        </Button>,
+        <Dropdown
+          key="menu"
+          menu={{
+            items: [
+              {
+                label: '1st item',
+                key: '1',
+              },
+              {
+                label: '2nd item',
+                key: '1',
+              },
+              {
+                label: '3rd item',
+                key: '1',
+              },
+            ],
+          }}
+        >
+          <Button>
+            <EllipsisOutlined />
           </Button>
-          <Button type="primary">批量审批</Button>
-        </FooterToolbar>
-      )}
-      <CreateForm
-        onCancel={() => handleModalVisible(false)}
-        modalVisible={createModalVisible}
-      >
-        <ProTable<API.UserInfo, API.UserInfo>
-          onSubmit={async (value) => {
-            const success = await handleAdd(value);
-            if (success) {
-              handleModalVisible(false);
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-            }
-          }}
-          rowKey="id"
-          type="form"
-          columns={columns}
-        />
-      </CreateForm>
-      {stepFormValues && Object.keys(stepFormValues).length ? (
-        <UpdateForm
-          onSubmit={async (value) => {
-            const success = await handleUpdate(value);
-            if (success) {
-              handleUpdateModalVisible(false);
-              setStepFormValues({});
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-            }
-          }}
-          onCancel={() => {
-            handleUpdateModalVisible(false);
-            setStepFormValues({});
-          }}
-          updateModalVisible={updateModalVisible}
-          values={stepFormValues}
-        />
-      ) : null}
-
-      <Drawer
-        width={600}
-        open={!!row}
-        onClose={() => {
-          setRow(undefined);
-        }}
-        closable={false}
-      >
-        {row?.name && (
-          <ProDescriptions<API.UserInfo>
-            column={2}
-            title={row?.name}
-            request={async () => ({
-              data: row || {},
-            })}
-            params={{
-              id: row?.name,
-            }}
-            columns={columns}
-          />
-        )}
-      </Drawer>
-    </PageContainer>
+        </Dropdown>,
+      ]}
+    />
   );
 };
-
-export default TableList;
