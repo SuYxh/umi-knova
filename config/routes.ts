@@ -147,6 +147,11 @@ export default [
         component: '@/pages/ImageEdit/Transformer',
       },
       {
+        path: '/imageEdit/TransformerPro',
+        name: 'TransformerPro',
+        component: '@/pages/ImageEdit/TransformerPro',
+      },
+      {
         path: '/imageEdit/DomNode',
         name: 'DomNode',
         component: '@/pages/ImageEdit/DomNode',
