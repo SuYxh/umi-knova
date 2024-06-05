@@ -181,6 +181,11 @@ export default [
         name: '画板',
         component: '@/pages/ImageEdit/Drawing',
       },
+      {
+        path: '/imageEdit/DrawingPro',
+        name: '画板Pro',
+        component: '@/pages/ImageEdit/DrawingPro',
+      },
     ],
   },
   {
