@@ -152,6 +152,11 @@ export default [
         component: '@/pages/ImageEdit/TransformerPro',
       },
       {
+        path: '/imageEdit/TransformerProPlus',
+        name: 'TransformerPro+',
+        component: '@/pages/ImageEdit/TransformerProPlus',
+      },
+      {
         path: '/imageEdit/DomNode',
         name: 'DomNode',
         component: '@/pages/ImageEdit/DomNode',
