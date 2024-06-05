@@ -33,6 +33,12 @@ export default [
     component: './Home',
   },
   {
+    name: '图片编辑器',
+    path: '/image-editor',
+    icon: 'smile',
+    component: '@/pages/ImageEditor/index.tsx',
+  },
+  {
     name: '权限演示',
     path: '/admin',
     icon: 'crown',
@@ -67,7 +73,7 @@ export default [
     ],
   },
   {
-    name: '图片编辑器',
+    name: 'react-konva 案例',
     path: '/imageEdit',
     icon: 'PieChartOutlined',
     routes: [
