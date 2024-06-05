@@ -57,11 +57,36 @@ function ImageComp() {
     imageRef.current = ref.current;
   };
 
-  const downloadImage = () => {
+  const downloadImage = (originalSize = false) => {
     if (imageRef.current) {
-      const dataURL = imageRef.current.toDataURL();
+      let dataURL;
+      if (originalSize) {
+        const image = imageRef.current.attrs.image;
+        const originalWidth = image.width;
+        const originalHeight = image.height;
+
+        // 创建离屏 canvas
+        const canvas = document.createElement('canvas');
+        canvas.width = originalWidth;
+        canvas.height = originalHeight;
+        const ctx = canvas.getContext('2d');
+
+        // 将 canvas 原点移动到中心，以便旋转
+        ctx.translate(originalWidth / 2, originalHeight / 2);
+        ctx.rotate((rotation * Math.PI) / 180);
+
+        // 绘制图片，将图片中心对准原点
+        ctx.drawImage(image, -originalWidth / 2, -originalHeight / 2);
+
+        dataURL = canvas.toDataURL();
+      } else {
+        dataURL = imageRef.current.toDataURL();
+      }
+
       const link = document.createElement('a');
-      link.download = 'rotated-image.png';
+      link.download = originalSize
+        ? 'rotated-original-size-image.png'
+        : 'rotated-image.png';
       link.href = dataURL;
       document.body.appendChild(link);
       link.click();
@@ -81,10 +106,17 @@ function ImageComp() {
       />
       <button
         type="button"
-        onClick={downloadImage}
+        onClick={() => downloadImage()}
         style={{ marginBottom: '10px' }}
       >
         导出图片
+      </button>
+      <button
+        type="button"
+        onClick={() => downloadImage(true)}
+        style={{ marginBottom: '10px' }}
+      >
+        导出原尺寸旋转图
       </button>
       <Stage width={stageWidth} height={stageHeight}>
         <Layer>
