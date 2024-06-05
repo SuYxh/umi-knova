@@ -117,10 +117,19 @@ export default [
         component: '@/pages/ImageEdit/ImageRotation',
       },
       {
-        
         path: '/imageEdit/ImageExport',
         name: '图片-导出',
         component: '@/pages/ImageEdit/ImageExport',
+      },
+      {
+        path: '/imageEdit/ImageExportTest',
+        name: '图片-导出测试',
+        component: '@/pages/ImageEdit/ImageExportTest',
+      },
+      {
+        path: '/imageEdit/ImageExportQuestion',
+        name: '图片-导出-问题演示',
+        component: '@/pages/ImageEdit/ImageExportQuestion',
       },
       {
         path: '/imageEdit/Drag',
