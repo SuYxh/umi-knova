@@ -117,10 +117,44 @@ export default [
         component: '@/pages/ImageEdit/ImageExport',
       },
       {
-        
         path: '/imageEdit/Drag',
         name: '拖拽',
         component: '@/pages/ImageEdit/Drag',
+      },
+      {
+        path: '/imageEdit/KonvaNode',
+        name: 'KonvaNode',
+        component: '@/pages/ImageEdit/KonvaNode',
+      },
+      {
+        path: '/imageEdit/Transformer',
+        name: 'Transformer',
+        component: '@/pages/ImageEdit/Transformer',
+      },
+      {
+        path: '/imageEdit/DomNode',
+        name: 'DomNode',
+        component: '@/pages/ImageEdit/DomNode',
+      },
+      {
+        path: '/imageEdit/UndoRedo',
+        name: '撤销重做',
+        component: '@/pages/ImageEdit/UndoRedo',
+      },
+      {
+        path: '/imageEdit/ChangeZindex',
+        name: '修改z-index',
+        component: '@/pages/ImageEdit/ChangeZindex',
+      },
+      {
+        path: '/imageEdit/DropImageIntoCanvas',
+        name: 'DropImageIntoCanvas',
+        component: '@/pages/ImageEdit/DropImageIntoCanvas',
+      },
+      {
+        path: '/imageEdit/Drawing',
+        name: '画板',
+        component: '@/pages/ImageEdit/Drawing',
       },
     ],
   },
