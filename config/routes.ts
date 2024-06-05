@@ -67,6 +67,64 @@ export default [
     ],
   },
   {
+    name: '图片编辑器',
+    path: '/imageEdit',
+    icon: 'PieChartOutlined',
+    routes: [
+      {
+        path: '/imageEdit',
+        redirect: '/imageEdit/index',
+      },
+      {
+        path: '/imageEdit/index',
+        name: '首页',
+        component: '@/pages/ImageEdit/index',
+      },
+      {
+        path: '/imageEdit/intro',
+        name: '简介',
+        component: '@/pages/ImageEdit/Intro',
+      },
+      {
+        path: '/imageEdit/BasicShape',
+        name: '基础图形',
+        component: '@/pages/ImageEdit/BasicShape',
+      },
+      {
+        path: '/imageEdit/CustomShape',
+        name: '自定义图形',
+        component: '@/pages/ImageEdit/CustomShape',
+      },
+      {
+        path: '/imageEdit/Image',
+        name: '图片',
+        component: '@/pages/ImageEdit/Image',
+      },
+      {
+        path: '/imageEdit/ImageZoom',
+        name: '图片-缩放',
+        component: '@/pages/ImageEdit/ImageZoom',
+      },
+      {
+        path: '/imageEdit/ImageRotation',
+        name: '图片-旋转',
+        component: '@/pages/ImageEdit/ImageRotation',
+      },
+      {
+        
+        path: '/imageEdit/ImageExport',
+        name: '图片-导出',
+        component: '@/pages/ImageEdit/ImageExport',
+      },
+      {
+        
+        path: '/imageEdit/Drag',
+        name: '拖拽',
+        component: '@/pages/ImageEdit/Drag',
+      },
+    ],
+  },
+  {
     path: '*',
     layout: false,
     component: './404',
