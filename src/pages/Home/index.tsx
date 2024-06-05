@@ -3,10 +3,10 @@ import { useModel } from '@umijs/max';
 
 import Guide from '@/components/Guide';
 import { trim } from '@/utils/format';
-
-import PicEditor from './editor/index';
 // import Base from './components/Base';
 import styles from './index.less';
+
+import ImgRotation from './editor/ImgRotation';
 
 const HomePage: React.FC = () => {
   const { name } = useModel('global');
@@ -17,7 +17,8 @@ const HomePage: React.FC = () => {
 
         {/* <Base /> */}
 
-        <PicEditor></PicEditor>
+        {/* <PicEditor></PicEditor> */}
+        <ImgRotation></ImgRotation>
       </div>
     </PageContainer>
   );
