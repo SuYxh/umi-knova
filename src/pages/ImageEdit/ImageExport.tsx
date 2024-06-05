@@ -4,9 +4,16 @@ import useImage from 'use-image';
 
 const pic1 = 'https://qn.huat.xyz/mac/202406051057150.jpeg';
 
-const LionImagePro = (props) => {
-  const { src, stageWidth, stageHeight, rotation, ...restProps } = props;
+const LionImagePro = ({
+  src,
+  stageWidth,
+  stageHeight,
+  rotation,
+  setImgRef,
+  ...restProps
+}) => {
   const [image] = useImage(src, 'anonymous');
+  const imageRef = useRef(null);
   const [dimensions, setDimensions] = useState({
     width: 0,
     height: 0,
@@ -16,19 +23,20 @@ const LionImagePro = (props) => {
 
   useEffect(() => {
     if (image) {
-      // 计算适应画布的最佳缩放比例
       const stageMin = Math.min(stageWidth, stageHeight);
       const maxImageDimension = Math.max(image.width, image.height);
-      const ratio = (stageMin / maxImageDimension) * 0.8; // 给一点空间防止触碰边缘
+      const ratio = (stageMin / maxImageDimension) * 0.8;
 
       const width = image.width * ratio;
       const height = image.height * ratio;
       setDimensions({ width, height, x: stageWidth / 2, y: stageHeight / 2 });
     }
-  }, [image, stageWidth, stageHeight]);
+    setImgRef(imageRef);
+  }, [image, stageWidth, stageHeight, setImgRef]);
 
   return (
     <Image
+      ref={imageRef}
       image={image}
       rotation={rotation}
       offsetX={dimensions.width / 2}
@@ -43,17 +51,22 @@ function ImageComp() {
   const stageWidth = 600;
   const stageHeight = 500;
   const [rotation, setRotation] = useState(0);
-  const stageRef = useRef(null);
+  const imageRef = useRef(null);
+
+  const setImgRef = (ref) => {
+    imageRef.current = ref.current;
+  };
 
   const downloadImage = () => {
-    const stage = stageRef.current;
-    const dataURL = stage.toDataURL();
-    const link = document.createElement('a');
-    link.download = 'rotated-image.png';
-    link.href = dataURL;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    if (imageRef.current) {
+      const dataURL = imageRef.current.toDataURL();
+      const link = document.createElement('a');
+      link.download = 'rotated-image.png';
+      link.href = dataURL;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   };
 
   return (
@@ -66,16 +79,21 @@ function ImageComp() {
         onChange={(e) => setRotation(e.target.value)}
         style={{ marginBottom: '10px' }}
       />
-      <button type="button" onClick={downloadImage} style={{ marginBottom: '10px' }}>
-        导出画布
+      <button
+        type="button"
+        onClick={downloadImage}
+        style={{ marginBottom: '10px' }}
+      >
+        导出图片
       </button>
-      <Stage ref={stageRef} width={stageWidth} height={stageHeight}>
+      <Stage width={stageWidth} height={stageHeight}>
         <Layer>
           <LionImagePro
             src={pic1}
             stageWidth={stageWidth}
             stageHeight={stageHeight}
             rotation={Number(rotation)}
+            setImgRef={setImgRef}
           />
         </Layer>
       </Stage>
