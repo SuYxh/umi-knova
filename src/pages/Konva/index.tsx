@@ -1,8 +1,6 @@
-import React from 'react'
-
 export default function index() {
   return (
-    <div>
+    <div style={{ height: '70vh' }}>
       图片编辑器功能演示
     </div>
   )
