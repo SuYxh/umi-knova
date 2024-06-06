@@ -4,6 +4,7 @@ import LionImage from './LionImage';
 import Shape from './Shape';
 import useDrawLines from './hooks/useDrawLines';
 import { initialShapes } from './initialValue';
+import style from './style.less';
 
 const ImageEditor: FC<any> = (props) => {
   const { stageWidth, stageHeight, src } = props;
@@ -96,36 +97,41 @@ const ImageEditor: FC<any> = (props) => {
         border: '1px solid black',
       }}
     >
-      <div>
-        <input
-          type="range"
-          min="0"
-          max="360"
-          value={rotation}
-          onChange={(e) => setRotation(Number(e.target.value))}
-          style={{ marginBottom: '10px' }}
-        />
-        <button
-          type="button"
-          onClick={downloadImage}
-          style={{ marginBottom: '10px' }}
-        >
-          导出图片
-        </button>
-      </div>
+      <div className={style['operation-area']}>
+        {/* 图片旋转 */}
 
-      <div>
-      <label>
-        <input
-          type="checkbox"
-          checked={isSelectPen} // 绑定 checkbox 的选中状态
-          onChange={handleCheckboxChange} // 设置改变事件处理器
-        />
-        开始绘画
-      </label>
-        <button type="button" onClick={toggleEraser}>
-          {eraserEnabled ? 'Switch to Brush' : 'Switch to Eraser'}
-        </button>
+        <div className={style['operation-image']}>
+          <span>图片旋转:</span>
+          <input
+            type="range"
+            min="0"
+            max="360"
+            value={rotation}
+            onChange={(e) => setRotation(Number(e.target.value))}
+            style={{ marginBottom: '10px' }}
+          />
+          <button
+            type="button"
+            onClick={downloadImage}
+            style={{ marginLeft: '10px' }}
+          >
+            导出图片
+          </button>
+        </div>
+
+        <div className={style['operation-pen']}>
+          <label>
+            <input
+              type="checkbox"
+              checked={isSelectPen} // 绑定 checkbox 的选中状态
+              onChange={handleCheckboxChange} // 设置改变事件处理器
+            />
+            开始绘画
+          </label>
+          <button type="button" onClick={toggleEraser} style={{ marginLeft: '10px' }}>
+            {eraserEnabled ? 'Switch to Brush' : 'Switch to Eraser'}
+          </button>
+        </div>
       </div>
 
       <Stage
