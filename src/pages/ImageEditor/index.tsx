@@ -9,7 +9,7 @@ const ImageEditComp: FC = () => {
 
   return (
     <div>
-      <ImageEditor width={width} height={height} src={pic1} />
+      <ImageEditor stageWidth={width} stageHeight={height} src={pic1} />
     </div>
   );
 };

@@ -10,7 +10,8 @@
     "prepare": "husky install",
     "setup": "max setup",
     "start": "npm run dev",
-    "lint": "max lint --fix"
+    "lint": "max lint --fix",
+    "lint2": "npx eslint --fix"
   },
   "dependencies": {
     "@ant-design/icons": "^5.0.1",
