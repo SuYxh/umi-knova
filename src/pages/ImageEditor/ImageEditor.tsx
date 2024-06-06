@@ -77,8 +77,35 @@ const ImageEditor: FC<any> = (props) => {
     }
   };
 
-  const onColorSelected = (val: any) => {
-    console.log('onColorSelected', val);
+  const onColorSelected = (color: any) => {
+    console.log('onColorSelected', color);
+
+    const newShapes = shapes.find( item => item.id === selectedId) ?? {}
+    if (!newShapes.type) {
+      return
+    }
+
+    switch (newShapes.type) {
+      // 矩形
+      case 'rect':
+        newShapes.stroke = color
+        break;
+      // 椭圆
+      case 'ellipse':
+        newShapes.stroke = color
+        break;
+        
+       // 箭头
+      case 'arrow':
+        newShapes.stroke = color
+        newShapes.fill = color
+      break; 
+    
+      default:
+        break;
+    }
+
+    setShapes([...shapes, newShapes])
   };
 
   const deleteShape = () => {
