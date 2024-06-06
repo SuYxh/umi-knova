@@ -116,6 +116,7 @@ const ImageEditor: FC<any> = (props) => {
 
   const addShape = (type: 'rect' | 'ellipse' | 'arrow') => {
     let newShape: any = {}
+    const timestamp = new Date().getTime();
     switch (type) {
       // 矩形
       case 'rect':
@@ -126,7 +127,7 @@ const ImageEditor: FC<any> = (props) => {
           height: 75,
           stroke: 'blue',
           strokeWidth: 2,
-          id: 'rect2',
+          id: `rect-${timestamp}`,
           type: 'rect',
         }
         break;
@@ -139,7 +140,7 @@ const ImageEditor: FC<any> = (props) => {
           radiusY: 25,
           stroke: 'black',
           strokeWidth: 2,
-          id: 'ellipse1',
+          id: `ellipse-${timestamp}`,
           type: 'ellipse',
         }
         break;
@@ -153,7 +154,7 @@ const ImageEditor: FC<any> = (props) => {
           fill: 'black',
           stroke: 'black',
           strokeWidth: 4,
-          id: 'arrow1',
+          id: `arrow-${timestamp}`,
           type: 'arrow',
         }
       break; 
