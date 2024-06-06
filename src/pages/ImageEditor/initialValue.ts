@@ -1,7 +1,7 @@
 export const initialShapes = [
   {
-    x: 10,
-    y: 10,
+    x: 200,
+    y: 300,
     width: 100,
     height: 100,
     fill: 'red',
