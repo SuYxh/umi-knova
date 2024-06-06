@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Stage, Layer, Line, Circle } from 'react-konva';
+import { Circle,Layer, Line, Stage } from 'react-konva';
 
 const Canvas = () => {
   const [lines, setLines] = useState([]);

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Image, Layer, Stage, Transformer, Rect } from 'react-konva';
+import { Image, Layer, Rect,Stage, Transformer } from 'react-konva';
 import useImage from 'use-image';
 
 const pic1 = 'https://qn.huat.xyz/mac/202406051057150.jpeg';

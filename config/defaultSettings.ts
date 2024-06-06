@@ -15,7 +15,7 @@ const Settings: ProLayoutProps & {
   fixSiderbar: true,
   colorWeak: false,
   layout: 'mix',
-  title: 'Ant Design',
+  title: 'react-konva 学习',
   // logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
   logo:'https://gw.alipayobjects.com/zos/antfincdn/aPkFc8Sj7n/method-draw-image.svg',
   pwa: true,

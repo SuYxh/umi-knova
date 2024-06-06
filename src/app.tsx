@@ -3,7 +3,7 @@ import type { Settings as LayoutSettings } from '@ant-design/pro-components';
 import type { RunTimeLayoutConfig } from '@umijs/max';
 import { history,Link } from '@umijs/max';
 
-import { getCurrentUser } from '@/services/user/index';
+// import { getCurrentUser } from '@/services/user/index';
 import { isDev } from '@/utils';
 
 import defaultSettings from '../config/defaultSettings';
@@ -25,8 +25,30 @@ export async function getInitialState(): Promise<{
 }> {
   const fetchUserInfo = async () => {
     try {
-      const msg = await getCurrentUser();
-      return msg.data;
+      return {
+        name: "白羽",
+        avatar: 'https://qn.huat.xyz/mac/202406061227962.jpg',
+        // avatar: "https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg",
+        userid: "user123",
+        email: "john.doe@example.com",
+        signature: "Stay hungry, stay foolish.",
+        title: "Senior Developer",
+        group: "Development Team",
+        tags: [
+          { key: "0", label: "leader" },
+          { key: "1", label: "tech" }
+        ],
+        notifyCount: 12,
+        unreadCount: 5,
+        country: "USA",
+        access: "admin",
+        geographic: {
+          province: { label: "California", key: "CA" },
+          city: { label: "San Francisco", key: "SF" }
+        },
+        address: "1234 Market St, San Francisco, CA 94103",
+        phone: "+11234567890"
+      }
     } catch (error) {
       history.push(loginPath);
     }

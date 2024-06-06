@@ -35,42 +35,8 @@ export default [
   {
     name: '图片编辑器',
     path: '/image-editor',
-    icon: 'smile',
+    icon: 'ToolOutlined',
     component: '@/pages/ImageEditor/index.tsx',
-  },
-  {
-    name: '权限演示',
-    path: '/admin',
-    icon: 'crown',
-    component: './Access',
-    access: 'canSeeAdmin',
-  },
-  {
-    name: '表格',
-    path: '/table',
-    icon: 'table',
-    component: './Table',
-  },
-  {
-    name: '图表',
-    path: '/charts',
-    icon: 'PieChartOutlined',
-    routes: [
-      {
-        path: '/charts',
-        redirect: '/charts/single-line',
-      },
-      {
-        path: '/charts/single-line',
-        name: 'SingleLine',
-        component: '@/pages/Charts/SingleLine',
-      },
-      {
-        path: '/charts/multi-line',
-        name: 'MultiLine',
-        component: '@/pages/Charts/MultiLine',
-      },
-    ],
   },
   {
     name: 'react-konva 案例',
