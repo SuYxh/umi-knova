@@ -1,7 +1,8 @@
 import { FC, useRef, useState } from 'react';
-import { Circle, Layer, Line, Stage } from 'react-konva';
+import { Layer, Stage } from 'react-konva';
 import LionImage from './LionImage';
 import Shape from './Shape';
+import DrawLines from './DrawLines';
 import useDrawLines from './hooks/useDrawLines';
 import { initialShapes } from './initialValue';
 import style from './style.less';
@@ -173,30 +174,9 @@ const ImageEditor: FC<any> = (props) => {
             );
           })}
         </Layer>
-
-        <Layer>
-          {lines.map((line, i) => (
-            <Line
-              key={i}
-              points={line.points}
-              stroke={line.tool === 'eraser' ? 'white' : 'black'}
-              strokeWidth={5}
-              tension={0.5}
-              lineCap="round"
-              globalCompositeOperation={
-                line.tool === 'eraser' ? 'destination-out' : 'source-over'
-              }
-            />
-          ))}
-          {eraserEnabled && (
-            <Circle
-              x={eraserPosition.x}
-              y={eraserPosition.y}
-              radius={10}
-              fill="red"
-            />
-          )}
-        </Layer>
+        
+        {/* 画线 */}
+        <DrawLines lines={lines} eraserEnabled={eraserEnabled} eraserPosition={eraserPosition} />
       </Stage>
     </div>
   );

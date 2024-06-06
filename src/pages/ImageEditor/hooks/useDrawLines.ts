@@ -53,6 +53,11 @@ function useDrawLines() {
   };
 
   const toggleEraser = () => {
+    if (!isSelectPen) {
+      alert('请选中画笔')
+      return
+    }
+
     setEraserEnabled(!eraserEnabled);
   };
 
