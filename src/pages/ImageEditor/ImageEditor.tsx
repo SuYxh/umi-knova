@@ -61,7 +61,9 @@ const ImageEditor: FC<any> = (props) => {
     lines,
     eraserEnabled,
     eraserPosition,
+    isSelectPen,
     toggleEraser,
+    handleCheckboxChange,
     handleMouseDownLine,
     handleMouseMoveLine,
     handleMouseUpLine,
@@ -113,6 +115,14 @@ const ImageEditor: FC<any> = (props) => {
       </div>
 
       <div>
+      <label>
+        <input
+          type="checkbox"
+          checked={isSelectPen} // 绑定 checkbox 的选中状态
+          onChange={handleCheckboxChange} // 设置改变事件处理器
+        />
+        开始绘画
+      </label>
         <button type="button" onClick={toggleEraser}>
           {eraserEnabled ? 'Switch to Brush' : 'Switch to Eraser'}
         </button>

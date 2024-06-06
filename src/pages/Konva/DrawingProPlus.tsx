@@ -65,7 +65,7 @@ const Canvas = () => {
 
   return (
     <div>
-      <button onClick={toggleEraser}>
+      <button type='button' onClick={toggleEraser}>
         {eraserEnabled ? 'Switch to Brush' : 'Switch to Eraser'}
       </button>
       <Stage
