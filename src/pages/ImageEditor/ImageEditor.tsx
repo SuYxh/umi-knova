@@ -1,12 +1,14 @@
 import { FC, useEffect, useRef, useState } from 'react';
-import { Layer, Stage } from 'react-konva';
+import Konva, { Layer, Stage } from 'react-konva';
 import ColorPicker from './component/ColorPicker';
 import DrawLines from './component/DrawLines';
 import LionImage from './component/LionImage';
 import Shape from './component/Shape';
+import TextComp from './component/Text';
 import useDrawLines from './hooks/useDrawLines';
 import { initialShapes } from './initialValue';
 import style from './style.less';
+import { throttle } from './utils';
 
 const ImageEditor: FC<any> = (props) => {
   const { stageWidth, stageHeight, src } = props;
@@ -21,22 +23,60 @@ const ImageEditor: FC<any> = (props) => {
   const [shapes, setShapes] = useState(initialShapes);
   const [selectedId, selectShape] = useState(null);
 
-  useEffect(() => {
-    console.log('selectedId change', selectedId);
-  }, [selectedId])
+  // 增加文案
+  const [textList, setTextList] = useState([]);
+  const [text, setText] = useState('');
+  const [clickText, setClickText] = useState('');
 
-    // 画线
-    const {
-      lines,
-      eraserEnabled,
-      eraserPosition,
-      isSelectPen,
-      toggleEraser,
-      handleCheckboxChange,
-      handleMouseDownLine,
-      handleMouseMoveLine,
-      handleMouseUpLine,
-    } = useDrawLines();
+  useEffect(() => {
+    console.log('useEffect-->textList', textList);
+  }, [textList])
+
+  const handleAddText = () => {
+    const timestamp = new Date().getTime();
+    const newTextList = {
+      text,
+      x: 100,
+      y: 100,
+      draggable: true,
+      fill: 'black',
+      id: `rect-${timestamp}`,
+      type: 'text',
+    };
+    setTextList([...textList, newTextList]);
+    setText('')
+  };
+
+  const deleteText = () => {
+    console.log('deleteText-origin', textList);
+    const newTextList = textList.filter(item => item.text !== clickText)
+    console.log('deleteText-newTextList', newTextList);
+    setTextList([...newTextList])
+  }
+
+  const handleClickText = (e) => {
+    const type = e.target.getClassName()
+    console.log('handleClickText-name', type);
+
+    if (type === 'Text') {
+      const curText = e.target.attrs.text
+      console.log('handleClickText-t', curText);
+      setClickText(curText)
+    }
+  }
+
+  // 画线
+  const {
+    lines,
+    eraserEnabled,
+    eraserPosition,
+    isSelectPen,
+    toggleEraser,
+    handleCheckboxChange,
+    handleMouseDownLine,
+    handleMouseMoveLine,
+    handleMouseUpLine,
+  } = useDrawLines();
 
   const setImgRef = (ref) => {
     imageRef.current = ref;
@@ -80,42 +120,42 @@ const ImageEditor: FC<any> = (props) => {
   const onColorSelected = (color: any) => {
     console.log('onColorSelected', color);
 
-    const newShapes = shapes.find( item => item.id === selectedId) ?? {}
+    const newShapes = shapes.find((item) => item.id === selectedId) ?? {};
     if (!newShapes.type) {
-      return
+      return;
     }
 
     switch (newShapes.type) {
       // 矩形
       case 'rect':
-        newShapes.stroke = color
+        newShapes.stroke = color;
         break;
       // 椭圆
       case 'ellipse':
-        newShapes.stroke = color
+        newShapes.stroke = color;
         break;
-        
-       // 箭头
+
+      // 箭头
       case 'arrow':
-        newShapes.stroke = color
-        newShapes.fill = color
-      break; 
-    
+        newShapes.stroke = color;
+        newShapes.fill = color;
+        break;
+
       default:
         break;
     }
 
-    setShapes([...shapes, newShapes])
+    setShapes([...shapes, newShapes]);
   };
 
   const deleteShape = () => {
     console.log('当前选中的图形', selectedId);
-    const newShapes = shapes.filter( item => item.id !== selectedId)
-    setShapes(newShapes)
-  }
+    const newShapes = shapes.filter((item) => item.id !== selectedId);
+    setShapes(newShapes);
+  };
 
   const addShape = (type: 'rect' | 'ellipse' | 'arrow') => {
-    let newShape: any = {}
+    let newShape: any = {};
     const timestamp = new Date().getTime();
     switch (type) {
       // 矩形
@@ -129,7 +169,7 @@ const ImageEditor: FC<any> = (props) => {
           strokeWidth: 2,
           id: `rect-${timestamp}`,
           type: 'rect',
-        }
+        };
         break;
       // 椭圆
       case 'ellipse':
@@ -142,10 +182,10 @@ const ImageEditor: FC<any> = (props) => {
           strokeWidth: 2,
           id: `ellipse-${timestamp}`,
           type: 'ellipse',
-        }
+        };
         break;
-        
-       // 箭头
+
+      // 箭头
       case 'arrow':
         newShape = {
           points: [250, 100, 350, 200],
@@ -156,25 +196,31 @@ const ImageEditor: FC<any> = (props) => {
           strokeWidth: 4,
           id: `arrow-${timestamp}`,
           type: 'arrow',
-        }
-      break; 
-    
+        };
+        break;
+
       default:
         break;
     }
-    setShapes([...shapes, newShape])
-  }
+    setShapes([...shapes, newShape]);
+  };
 
   // 画布监听的事件
-  const handleMouseMove = (e: any) => {
-    console.log('handleMouseDown', e);
-    handleMouseMoveLine(e);
-  };
+  // const handleMouseMove = (e: any) => {
+  //   console.log('handleMouseMove', e);
+  //   handleMouseMoveLine(e);
+  // };
+  const handleMouseMove = throttle((e) => {
+    console.log('handleMouseMove', e);
+      handleMouseMoveLine(e);
+  }, 500)
+
 
   const handleMouseDown = (e: any) => {
     console.log('handleMouseDown', e);
     handleMouseDownLine(e);
     checkDeselect(e);
+    handleClickText(e)
   };
 
   const handleMouseUp = (e: any) => {
@@ -192,7 +238,8 @@ const ImageEditor: FC<any> = (props) => {
       if (event.key === 'Backspace') {
         console.log('退格键被按下了');
         // 这里可以添加你想要执行的代码
-        deleteShape()
+        deleteShape();
+        deleteText()
       }
     };
 
@@ -203,7 +250,7 @@ const ImageEditor: FC<any> = (props) => {
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [selectedId]);
+  }, [selectedId, clickText]);
 
   return (
     <div
@@ -271,9 +318,31 @@ const ImageEditor: FC<any> = (props) => {
         </div>
 
         <div className={style['operation-btn']}>
-          <button type="button" onClick={() => addShape('rect')}>添加矩形</button>
-          <button type="button" onClick={() => addShape('ellipse')}>添加椭圆</button>
-          <button type="button" onClick={() => addShape('arrow')}>添加箭头</button>
+          <button type="button" onClick={() => addShape('rect')}>
+            添加矩形
+          </button>
+          <button type="button" onClick={() => addShape('ellipse')}>
+            添加椭圆
+          </button>
+          <button type="button" onClick={() => addShape('arrow')}>
+            添加箭头
+          </button>
+        </div>
+
+        <div className={style['operation-text']}>
+          <input
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleAddText();
+              }
+            }}
+            style={{ marginBottom: '10px' }}
+          />
+          <button type="button" onClick={handleAddText}>
+            添加文案
+          </button>
         </div>
       </div>
 
@@ -325,6 +394,9 @@ const ImageEditor: FC<any> = (props) => {
           eraserEnabled={eraserEnabled}
           eraserPosition={eraserPosition}
         />
+
+        {/* 文案 */}
+        <TextComp textList={textList} />
       </Stage>
     </div>
   );
