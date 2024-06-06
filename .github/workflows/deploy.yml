@@ -27,5 +27,5 @@ jobs:
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ secrets.MY_GITHUB_TOKEN }}
         publish_dir: ./dist  # Umi4 默认的构建输出目录为 dist，如果你修改了构建目录，请相应调整
