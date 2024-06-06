@@ -18,11 +18,16 @@ jobs:
       with:
         node-version: '16'  # 根据项目需要选择 Node.js 的版本
 
+    - name: Install pnpm
+      run: npm install -g pnpm
+
     - name: Install Dependencies
-      run: npm install
+      run: pnpm install
 
     - name: Build Project
-      run: npm run build
+      run: |
+        export NODE_ENV=production
+        pnpm run build
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
